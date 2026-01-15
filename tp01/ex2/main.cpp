@@ -4,7 +4,9 @@
 
 void ajoute_double(std::vector<int>& v)
 {
+    
     auto tmp = std::vector<int>(v);
+    tmp.reserve(2 * v.size());
     for (auto n : v)
     {
         tmp.emplace_back(n * 2);
@@ -27,13 +29,15 @@ int main()
 
     auto number = -1;
     std::string entry;
-
+    
     while(number != 0){
         std::cin >> entry;
         try {
             number = std::stoi(entry);
             if(number < 0){
                 entiers.pop_back();
+            } else if (number == 0) {
+                break;
             } else {
                 entiers.emplace_back(number);
             }
