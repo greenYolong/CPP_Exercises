@@ -1,25 +1,55 @@
 #include <iostream>
+#include <vector>
+#include <string>
 
-void ajoute_double(std::vector<int> v)
+void ajoute_double(std::vector<int>& v)
 {
+    auto tmp = std::vector<int>(v);
     for (auto n : v)
     {
-        v.emplace_back(n * 2);
+        tmp.emplace_back(n * 2);
     }
+    v = tmp;
+}
+
+void print_vector(std::vector<int>& v){
+    std::cout << "Le tableau contient les valeurs :";
+    for (auto i: v)
+    {
+        std::cout << " " << i;
+    }
+    std::cout << std::endl;
 }
 
 int main()
 {
-    auto entiers = std::vector<int>{1, 3, 3, 7};
+    auto entiers = std::vector<int>{};
 
-    std::cout << "Le tableau contient les valeurs :";
-    for (int i = 0; i < entiers.size(); i++)
-    {
-        std::cout << " " << entiers[i];
+    auto number = -1;
+    std::string entry;
+
+    while(number != 0){
+        std::cin >> entry;
+        try {
+            number = std::stoi(entry);
+            if(number < 0){
+                entiers.pop_back();
+            } else {
+                entiers.emplace_back(number);
+            }
+        } catch (std::invalid_argument){
+            std::cerr << "Ceci n'est pas un entiers!" << std::endl;
+        }
     }
-    std::cout << std::endl;
+
+    print_vector(entiers);
+
+    std::cout << "Premier élément : " << entiers.front() << std::endl;
+    std::cout << "Dernier élément : " << entiers.back() << std::endl;
 
     ajoute_double(entiers);
+
+    print_vector(entiers);
 
     return 0;
 }

@@ -2,7 +2,7 @@
 
 void print_hello();
 
-// void print_bye()
-// {
-//     std::cout << "Bye" << std::endl;
-// }
+inline void print_bye()
+{
+    std::cout << "Bye" << std::endl;
+}
