@@ -87,4 +87,4 @@ Pour résoudre cette erreur, il faudrait ajouter `inline` deva&nt notre `print_b
 Ça marche bien
 
 # Selon-vous, quel est l'effet du mot-clef `inline` sur le linker ?
-`inline` autorise plusieurs définitions identiques (dans les headers)
+`inline` autorise plusieurs définitions identiques 
