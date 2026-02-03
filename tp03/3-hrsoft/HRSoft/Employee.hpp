@@ -13,8 +13,23 @@ public:
 
   void add_subordinate(Employee& subordinate)
   {
-    // TODO - Q3
-    // ...
+    _subordinates.emplace_back(&subordinate);
+  }
+
+  void remove_employee(const Employee& employee) {
+    std::erase_if(_subordinates, [](Employee e){return e == employee;});
+  }
+
+  void print_subordinates() const {
+    if(_subordinates.empty()){
+      std::cout << _name << " has no subordinates !" << std::endl;
+      return;
+    }
+    std::cout << "Subordinates of " << _name << ":" << std::endl;
+    for(auto employee: _subordinates){
+      std::cout << employee->_name << " ";
+    }
+    std::cout << std::endl;
   }
 
   friend std::ostream& operator<<(std::ostream&, const Employee&);

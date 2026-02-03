@@ -10,21 +10,24 @@ int main() {
   auto &jacques = rd_dpt.add_employee("Jacques", 2500, &charline);
   auto &paul = market_dpt.add_employee("Paul", 2500, &charline);
 
+  // On utilise des listes car on n'invalide pas les références lors de l'ajout d'un élément 
+  // (vu qu'on stocke des pointeurs, els élements sont chainés et dispersés dans la mémoire)
+
   // TODO Q2.
   // Affiche différentes informations du système.
-  // rd_dpt.print_employees();
-  // system.print_all_departments();
-  // system.print_all_employees();
+  rd_dpt.print_employees();
+  system.print_all_departments();
+  system.print_all_employees();
 
   // TODO Q3.
   // Affiche tous les employés managés par Charline.
-  // charline.print_subordinates();
+  charline.print_subordinates();
 
   // // Q4.
-  // std::cout << "Jacques est licencié..." << std::endl;
-  // system.remove_employee(jacques);
-  // rd_dpt.print_employees(); // Jacques ne doit plus apparaître
-  // charline.print_subordinates(); // Jacques ne doit plus apparaître
+  std::cout << "Jacques est licencié..." << std::endl;
+  system.remove_employee(jacques);
+  rd_dpt.print_employees(); // Jacques ne doit plus apparaître
+  charline.print_subordinates(); // Jacques ne doit plus apparaître
 
   // // Un employée inexistant du système ne devrait pas le faire planter.
   // Employee athanase("Athanase", 0);
