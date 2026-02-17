@@ -10,7 +10,7 @@ TEST_CASE("Deux PhoneBookEntry sont égales si elles contiennent le même nom")
     auto e3 = PhoneBookEntry { "Marcel", PhoneNumber { 4, 3, 22, 73, 16 } };
     auto e4 = PhoneBookEntry { "Jean", PhoneNumber { 1, 64, 0, 66, 73 } };
 
-    bool e1_e2_are_equal = e1 == e2;
+    bool e1_e2_are_equal = e1 == e2; 
     REQUIRE(e1_e2_are_equal == true);
 
     // e1 et e3 sont égaux: ils n'ont pas le même numéro, mais on bien le même nom
