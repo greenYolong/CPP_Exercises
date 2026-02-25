@@ -7,13 +7,22 @@ class LinkedList
 {
 public:
     // Il faut réflechir aux prototypes des fonctions-membres ci-dessous, certains ne sont pas corrects.
-    // friend std::ostream& operator<<(std::ostream& o, LinkedList list);
+    friend std::ostream& operator<<(std::ostream& o, const LinkedList& list);
 
-    // size_t size();
-    // bool   empty();
-    // void   push_back(Person);
-    // Person back();
-    // Person front();
+    LinkedList();
+    ~LinkedList();
+    LinkedList(const LinkedList&);
+    LinkedList& operator=(const LinkedList&);
+
+    size_t size() const;
+    bool empty() const;
+    const Person& front() const;
+    Person& front();
+    const Person& back() const;
+    Person& back();
+
+    void push_back(const Person&);
+    void push_back(Person&&);
 
     // void concatenate_back(LinkedList);
 
@@ -24,7 +33,7 @@ public:
     // static void swap(LinkedList, LinkedList);
 
 private:
-    Link* _front;
-    Link* _back;
-    int   _size;
+    Link* _front = nullptr;
+    Link* _back = nullptr;
+    int   _size = 0;
 };

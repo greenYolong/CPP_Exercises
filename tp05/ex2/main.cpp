@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 
         while (Player::play(p1, p2) && Player::turn_number != max_turn)
         {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         std::cout << "Fin de partie: ";
