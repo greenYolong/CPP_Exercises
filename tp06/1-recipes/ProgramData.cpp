@@ -1,30 +1,50 @@
 #include "ProgramData.hpp"
 #include <iostream>
+#include <utility>
+#include <algorithm>
 
 
 void ProgramData::register_material(std::string name)
 {
-  std::cout << "Feature is not yet implemented (register_material)" << std::endl;
+  auto ptr = std::make_unique<Material>(name);
+  _registered_materials.emplace_back(ptr);
+  _material_from_name[name] = ptr.get();
 }
 
 void ProgramData::get_registered_materials(std::vector<const Material*>& materials) const
 {
-  std::cout << "Feature is not yet implemented (get_registered_materials)" << std::endl;
+  for(const auto& ptr: _registered_materials){
+    materials.push_back(ptr.get());
+  }
 }
 
 void ProgramData::add_material_to_inventory(const Material& mat, int quantity)
 {
-  std::cout << "Feature is not yet implemented (add_material_to_inventory)" << std::endl;
+  auto pair = std::make_pair<const Material*, size_t>(&mat, quantity);
+  _inventory.emplace_back(pair);
 }
 
 void ProgramData::get_inventory(MaterialBag& materials) const
 {
-  std::cout << "Feature is not yet implemented (get_inventory)" << std::endl;
+  for(const auto& pair: _inventory){
+    materials.push_back(pair);
+  }
 }
 
 const Material* ProgramData::get_material_by_name(const std::string& name) const
 {
-  std::cout << "Feature is not yet implemented (get_material_by_name)" << std::endl;
+  // for(const auto& ptr: _registered_materials){
+  //   auto mat = ptr.get();
+  //   if(mat->get_name() == name){
+  //     return mat;
+  //   }
+  // }
+  // return nullptr;
+
+  auto search = _material_from_name.find(name);
+  if(search != _material_from_name.end()) {
+    return search->second;
+  }
   return nullptr;
 }
 
@@ -36,23 +56,49 @@ const Material* ProgramData::get_material_by_name(const std::string& name) const
 void ProgramData::register_recipe(std::vector<const Material*> materials,
                                   const Material& product)
 {
-  std::cout << "Feature is not yet implemented (register_recipe)" << std::endl;
+  MaterialBag bag;
+  for(const auto* mat: materials){
+    auto it = std::find_if(
+      bag.begin(),
+      bag.end(),
+      [mat](const auto& entry) {
+          return entry.first == mat;
+      }
+    );
+    if(it == bag.end()){
+      bag.emplace_back(mat, 1);
+    } else {
+      it->second++;
+    }
+  }
+  size_t id = _registered_recipes.size() + 1;
+  _registered_recipes.emplace(bag, product, id);
 }
 
-void ProgramData::get_all_recipes(std::vector<const Recipe*>& recipes) const
+void ProgramData::get_all_recipes(std::vector<const Recipe*>& recipes) const 
 {
-  std::cout << "Feature is not yet implemented (get_all_recipes)" << std::endl;
+  for(const auto& recipe: _registered_recipes){  // Même ordre is vector, ordre random si unordered_set
+    recipes.push_back(&recipe);
+  }
 }
 
 const Recipe* ProgramData::get_recipe_by_id(size_t id) const
 {
-  std::cout << "Feature is not yet implemented (get_recipe_by_id)" << std::endl;
+  auto search = _registered_recipes.find(id);
+  if(search != _registered_recipes.end()){
+    return search;
+  }
   return nullptr;
 }
 
-void ProgramData::unregister_recipe(const Recipe&)
+void ProgramData::unregister_recipe(const Recipe& recipe)
 {
-  std::cout << "Feature is not yet implemented (unregister_recipe)" << std::endl;
+  auto search = get_recipe_by_id(recipe.get_id());
+  if(search){
+    delete search;
+  } else {
+    std::cout << "Unknown Recipe" << std::endl;
+  }
 }
 
 

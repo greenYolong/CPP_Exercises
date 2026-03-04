@@ -4,6 +4,9 @@
 #include "Recipe.hpp"
 #include "aliases.hpp"
 #include <string>
+#include <vector>
+#include <map>
+#include <memory> 
 
 enum class Outcome
 {
@@ -14,6 +17,12 @@ enum class Outcome
 // Contient toutes les données utiles au programme.
 class ProgramData
 {
+private:
+  std::vector<std::unique_ptr<Material>> _registered_materials;
+  MaterialBag _inventory;    // vector<pair<const Material*, size_t>>;
+  RecipeCollection _registered_recipes;    // set<Recipe>;
+  std::map<std::string, Material*> _material_from_name;
+
 public:
   //===== Partie Matériau =====================================================
 
