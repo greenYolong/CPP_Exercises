@@ -15,14 +15,22 @@ public:
     int get_x() const { return _x; }
     int get_y() const { return _y; }
 
-    char get_representation() const { return '?'; }
+    virtual char get_representation() const = 0;
 
-    void update() { 
+    virtual void update() { 
         random_move(_x, _y); 
         logger << "Updated " << this << std::endl;
     }
 
+    virtual void interact_with(Entity& e) {}
+
+    virtual bool should_destroy() const { return !_live; }
+
+    virtual void kill() { _live = false; }
+
 private:
     int _x = 0;
     int _y = 0;
+protected:
+    bool _live = true;
 };
