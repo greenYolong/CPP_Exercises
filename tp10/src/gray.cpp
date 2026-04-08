@@ -28,7 +28,7 @@ int main(int argc, char** argv)
             [&base](size_t i, size_t j)
             {
                 RGBA p = base(i, j);
-                p.a    = 127u;
+                p._alpha    = 127u;
                 return p;
             });
         image_lib::save(grayed_out, "images/sonic_new_bg_grayed_out.png");

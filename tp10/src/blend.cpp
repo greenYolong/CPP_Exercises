@@ -24,6 +24,7 @@ int main(int argc, char** argv)
 
     {
         const auto base   = image_lib::load<RGBA, 1012, 570>(input_path / "photo_base.png");
+        usage();
         const auto effect = image_lib::load<RGBA, 1012, 570>(input_path / "photo_dithering.png");
         const auto sum    = base + effect;
         image_lib::save(sum, "images/photo_base_and_dithering.png");
@@ -43,7 +44,7 @@ int main(int argc, char** argv)
             [&effect_orig](size_t i, size_t j)
             {
                 RGBA p = effect_orig(i, j);
-                p.a    = 191u;
+                p._alpha    = 191u;
                 return p;
             });
         const auto sum = base + effect_gray;
