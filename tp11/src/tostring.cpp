@@ -6,8 +6,26 @@
 #include <string>
 #include <vector>
 
+// Définition du type général
+template <unsigned N>
+struct priority_tag : priority_tag<N - 1>
+{};
+// Spécialisation de priority_tag pour N=0
+template <>
+struct priority_tag<0>
+{};
+
+priority_tag<2> priority_highest_value;
+
+
 template <typename T>
 auto to_string(T&& data)
+{
+    return to_string(data, priority_highest_value);
+}
+
+template <typename T>
+auto to_string(T&& data, priority_tag<0>)
 {
   std::stringstream ss;
   ss << "<" << typeid(data).name() << " @" << &data << ">  :(";
@@ -15,7 +33,33 @@ auto to_string(T&& data)
 }
 
 // Ecrire les spécialisations ici
-// ...
+template<>
+auto to_string(std::string& s){
+  return s;
+}
+template<>
+auto to_string(std::string&& s){
+  return s;
+}
+
+auto to_string(const char* chars){
+  std::string str(chars);
+  return str;
+}
+
+template <typename T>
+auto to_string(T&& value, priority_tag<1>) -> decltype(std::to_string(value))
+{
+  return std::to_string(value);
+}
+
+template <typename T>
+auto to_string(T&& value, priority_tag<2>) -> decltype(value.to_string())
+{
+  return value.to_string();
+}
+
+
 
 
 // Vous n'avez rien à modifier en dessous de cette ligne !
@@ -49,13 +93,13 @@ template <typename T>
 void print_test(std::string type, T&& value)
 {
   std::cout << type << std::endl;
-  std::cout << "** Error: value is not a std::string" << std::endl;
+  std::cout << "** Error: value is not a std::string" << std::endl << std::endl;
 }
 
 void print_test(std::string type, std::string value)
 {
   std::cout << type << std::endl;
-  std::cout << " -> " << value << std::endl;
+  std::cout << " -> " << value << std::endl << std::endl;
 }
 
 int main()

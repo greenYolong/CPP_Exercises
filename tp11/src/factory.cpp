@@ -3,6 +3,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <functional>
+#include <map>
 
 // Liste des entitées à construire
 std::string desc = R"(Object
@@ -21,20 +23,43 @@ public:
   virtual ~Entity() = default;
 };
 
+
 class Factory
 {
 public:
-  // using Builder =
+  using Builder = std::function<std::unique_ptr<Entity>()>;
 
-  template <typename TDerivedEntity>
-  void register_entity(std::string)
-  {}
+  // template <typename TDerivedEntity>
+  // void register_entity(std::string index)
+  // {
+  //   builders[index] = []() {
+  //       return std::make_unique<TDerivedEntity>();
+  //   };
+  // }
 
-  std::unique_ptr<Entity> build(std::string) const { return nullptr; }
+  template <typename TDerivedEntity, typename... Args>
+  void register_entity(std::string index, Args&&... args)
+  {
+    builders[index] = [&args...]() {
+        return std::make_unique<TDerivedEntity>(args...);
+    };
+  }
+
+  std::unique_ptr<Entity> build(std::string index) const { 
+    auto it = builders.find(index);
+
+    if (it != builders.end())
+    {
+        return it->second(); 
+    }
+
+    return nullptr;
+  }
 
 private:
-  // ...
+  std::map<std::string, Builder> builders;
 };
+
 
 class Object : public Entity
 {
@@ -42,11 +67,13 @@ public:
   void print() const override { std::cout << "Object" << std::endl; }
 };
 
+
 class Tree : public Object
 {
 public:
   void print() const override { std::cout << "Arbre" << std::endl; }
 };
+
 
 class Person : public Entity
 {
@@ -63,6 +90,7 @@ public:
 private:
   std::string _name;
 };
+
 
 class Animal : public Entity
 {
@@ -89,6 +117,7 @@ private:
   std::string _name;
 };
 
+
 class House : public Object
 {
 public:
@@ -102,11 +131,20 @@ private:
   Person& _owner;
 };
 
+
+
 int main()
 {
   Factory factory;
-  // factory.register_entity<Object>("Object");
-  // ...
+  factory.register_entity<Object>("Object");
+  factory.register_entity<Tree>("Tree");
+  factory.register_entity<Person>("Person", "Jean");
+  factory.register_entity<Animal>("Dog", "Dog", "Medor");
+  factory.register_entity<Animal>("Cat", "Cat", "Pacha");
+  Person p{ "Gripsou" };
+  factory.register_entity<House>("House", p);
+  p.set_name("Picsou");
+  factory.register_entity<Animal>("Athanase", "cat", "Athanase");
 
 
   // Vous n'avez rien à modifier en dessous de cette ligne !
