@@ -1,9 +1,12 @@
 #include <array>
+#include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <list>
 #include <map>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 // Définition du type général
@@ -15,7 +18,7 @@ template <>
 struct priority_tag<0>
 {};
 
-priority_tag<2> priority_highest_value;
+priority_tag<4> priority_highest_value;
 
 
 template <typename T>
@@ -42,19 +45,89 @@ auto to_string(std::string&& s){
   return s;
 }
 
+template<typename T, size_t N>
+auto to_string(std::array<T, N>&& array) {
+  std::stringstream ss;
+  ss << "[";
+
+  auto first = true;
+  for(const auto& e: array){
+    if(!first) {
+      ss << ", ";
+    }
+    first = false;
+
+    ss << to_string(e);
+  }
+
+  ss << "]";
+  return ss.str();
+}
+
+template <std::size_t I = 0, typename... Ts>
+void tuple_print(const std::tuple<Ts...>& t, std::stringstream& ss)
+{
+    if constexpr (I < sizeof...(Ts))
+    {
+        if constexpr (I > 0){
+          ss << ", ";
+        }
+
+        ss << to_string(std::get<I>(t));
+        tuple_print<I + 1>(t, ss);
+    }
+}
+
+template<typename... Ts>
+auto to_string(std::tuple<Ts...>&& tuple){
+  std::stringstream ss;
+  ss << "(";
+  tuple_print(tuple,ss);
+  ss << ")";
+  return ss.str();
+}
+
 auto to_string(const char* chars){
   std::string str(chars);
   return str;
 }
 
 template <typename T>
-auto to_string(T&& value, priority_tag<1>) -> decltype(std::to_string(value))
+auto to_string(T&& value, priority_tag<1>) -> decltype(std::declval<std::ostream&>() << value, std::string())
+{
+  std::stringstream ss;
+  ss << value;
+  return ss.str();
+}
+
+template<typename T>
+auto to_string(T&& ctn, priority_tag<2>) -> decltype(std::begin(ctn), std::string())
+{
+  std::stringstream ss;
+  ss << "{";
+
+  auto first = true;
+  for(const auto& e: ctn){
+    if(!first) {
+      ss << ", ";
+    }
+    first = false;
+
+    ss << to_string(e);
+  }
+
+  ss << "}";
+  return ss.str();
+}
+
+template <typename T>
+auto to_string(T&& value, priority_tag<3>) -> decltype(std::to_string(value))
 {
   return std::to_string(value);
 }
 
 template <typename T>
-auto to_string(T&& value, priority_tag<2>) -> decltype(value.to_string())
+auto to_string(T&& value, priority_tag<4>) -> decltype(value.to_string())
 {
   return value.to_string();
 }
